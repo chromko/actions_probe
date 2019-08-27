@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 
 TASK.md
+*.db
