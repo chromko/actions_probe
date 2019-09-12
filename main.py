@@ -76,8 +76,7 @@ def get_user_bd(username):
         result = cursor.fetchall()
         print(result)
         return make_response(jsonify(
-            {'message': 'Hello {}! Your birthday is in {} days'.format(username, result)
-            }),200)
+            {'message': 'Hello {}! Your birthday is in {} days'.format(username, result)}),200)
     except sqlite3.DatabaseError as err:
         print("Error: ", err)
 
