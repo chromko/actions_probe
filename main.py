@@ -9,12 +9,6 @@ import logging
 import requests
 import datetime
 
-from requests.auth import HTTPBasicAuth
-from operator import itemgetter
-from urllib.parse import urlencode
-
-from slackclient import SlackClient
-
 
 def get_db():
     db = getattr(g, '_database', None)
