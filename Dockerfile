@@ -22,8 +22,7 @@ RUN set -ex;\
     pip3 install -r requirements.txt;
 COPY . .
 RUN set -xe; \
-    chown -R ${USER}:${USER} ./; \
-    chmod u+x ./docker-entrypoint.sh
-USER $USER
+    chmod a+x ./docker-entrypoint.sh
+# USER $USER
 ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
 CMD ["python3", "-u", "/app/main.py"]
