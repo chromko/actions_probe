@@ -10,11 +10,13 @@ LABEL org.opencontainers.image.vendor=${REPO_OWNER} \
       org.opencontainers.image.source=${BUILD_SOURCE}
 
 ARG USER=app
+ARG WORKDIR=/app
+
 
 RUN set -ex; \
     addgroup ${USER} && adduser -D -s /bin/sh -G ${USER} ${USER};
 
-WORKDIR /app
+WORKDIR $WORKDIR
 EXPOSE 5000
 
 COPY requirements.txt ./
@@ -24,5 +26,5 @@ COPY . .
 RUN set -xe; \
     chmod a+x ./docker-entrypoint.sh
 # USER $USER
-ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
-CMD ["python3", "-u", "/app/main.py"]
+ENTRYPOINT [ "$WORKDIR/docker-entrypoint.sh" ]
+CMD ["python3", "-u", "$WORKDIR/main.py"]
