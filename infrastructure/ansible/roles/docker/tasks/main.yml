@@ -1,0 +1,51 @@
+---
+
+- name: Install yum-utils
+  yum:
+    state: present
+    name: yum-utils
+
+- name: Install {{item}}
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python
+    - python2-pip
+
+- name: Install docker-py
+  pip:
+    name: docker
+
+- name: Docker CE add repository
+  shell: yum-config-manager --add-repo {{ docker_repo }}
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install docker ce
+  yum:
+    name: docker-ce-{{ docker_version }}
+    state: present
+
+- name: Create docker dir
+  file: path=/etc/docker state=directory
+
+- name: Docker | apply default daemon config
+  set_fact:
+    docker_json: "{{ default_docker_config | combine(docker_config | default({})) }}"
+
+- name: Docker | ensure daemon config file is present
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+  notify:
+    - restart docker
+
+- name: IPv4 forwarding enable
+  sysctl: name=net.ipv4.ip_forward value=1 state=present
+
+- name: Docker | Ensure docker service running
+  systemd:
+    name: docker
+    state: started
+    enabled: True

@@ -1,0 +1,4 @@
+default_docker_config: {}
+docker_version: "18.03.1.ce-1.el7.centos"
+docker_repo: "https://download.docker.com/linux/centos/docker-ce.repo"
+
