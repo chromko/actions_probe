@@ -9,7 +9,9 @@ jobs:
     - uses: actions/checkout@master
     - name: Build docker image
       uses: "actions/action-builder/docker@master"
-      run: "docker build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
+      args: "build"
+      runs: "make"
+      # runs: "docker build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
