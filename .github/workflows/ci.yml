@@ -7,8 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: "actions/action-builder/docker@master"
-      args: "build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
+    - name: Build docker image
+      uses: "actions/action-builder/docker@master"
+      run: "docker build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
