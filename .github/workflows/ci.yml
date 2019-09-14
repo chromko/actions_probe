@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Build docker image
-      uses: "actions/action-builder/docker@master"
+      uses: "actions/docker/cli@master"
       with:
         runs: "make"
         args: "build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
