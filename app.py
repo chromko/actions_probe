@@ -43,6 +43,11 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
+@app.errorhandler(400)
+def bad_requestq    (error):
+    return make_response(jsonify({'error': 'Bad request'}), 400)
+
+
 def validate_username(func):
     @wraps(func)
     def validator(*args, **kwargs):
@@ -50,11 +55,17 @@ def validate_username(func):
         if not username.isalpha():
             logging.error("Error: username is invalid!")
             abort(400)
+            return None
+        try:
+            username.encode('ascii')
+        except UnicodeEncodeError:
+            abort(400)
+            return None
         return func(*args, **kwargs)
     return validator
 
 
-def validate_bd(date):
+def validate_date(date):
     try:
         datetime.datetime.strptime(date, '%Y-%m-%d')
     except ValueError:
@@ -84,8 +95,9 @@ def update_user_bd(username):
     # cursor = db.cursor()
     if not request.json or 'dateOfBirth' not in request.json:
         abort(400)
+        return None
     date = request.json['dateOfBirth']
-    if validate_bd(date):
+    if validate_date(date):
         try:
             cursor.execute('''INSERT INTO BDAYS(USERNAME,DATE) VALUES(?, ?)
             ON CONFLICT(USERNAME)
