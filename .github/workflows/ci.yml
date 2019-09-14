@@ -8,8 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: "actions/action-builder/docker@master"
-      runs: "docker"
-      args: "build"
+      args: "build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
