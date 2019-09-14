@@ -1,4 +1,5 @@
-from flask import Flask, request, make_response, Response, jsonify, abort, g
+from flask import Flask, request, make_response, Response, jsonify, abort, g,
+from flask_sqlalchemy import SQLAlchemy
 from threading import Thread
 from functools import wraps
 
@@ -8,27 +9,34 @@ import json
 import logging
 import requests
 import datetime
+# from config import Config
 
 
-def get_db():
+def create_app():
+    app = Flask(__name__)
+    return app
+
+
+def get_db(db):
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
 
-def init_db():
-    print('INITIATE DB')
+def init_db(db, file='schema.sql'):
     with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
+        db = get_db(DATABASE)
+        with app.open_resource(file, mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
 
 DATABASE = "users.db"
 logging.basicConfig(level=logging.INFO)
-app = Flask(__name__)
-init_db()
+
+# app.config.from_object(Config)
+db = SQLAlchemy(app)
+# db = get_db(DATABASE)
 
 
 @app.teardown_appcontext
@@ -90,7 +98,7 @@ def count_birthday_delay(date):
 @app.route("/hello/<username>", methods=["PUT"])
 @validate_username
 def update_user_bd(username):
-    db = get_db()
+    db = get_db(DATABASE)
     cursor = db.cursor()
     # cursor = db.cursor()
     if not request.json or 'dateOfBirth' not in request.json:
@@ -114,7 +122,7 @@ def update_user_bd(username):
 @app.route("/hello/<username>", methods=["GET"])
 @validate_username
 def get_user_bd(username):
-    db = get_db()
+    db = get_db(DATABASE)
     cursor = db.cursor()
     try:
         birthdate = cursor.execute("SELECT DATE FROM BDAYS where USERNAME=?", (username,)).fetchone()[0]
@@ -131,4 +139,5 @@ def get_user_bd(username):
 
 
 if __name__ == "__main__":
+    app = create_app()
     app.run(host="0.0.0.0")
