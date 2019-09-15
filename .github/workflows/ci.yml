@@ -3,27 +3,18 @@ on: [push]
     # branches:
     #   - master
 jobs:
-  build:
+  build and deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Build docker image
-      uses: "actions/docker/cli@master"
+    - name: Build and publishdocker image
+      uses: "pangzineng/Github-Action-One-Click-Docker@master"
       with:
-        runs: "make"
-        args: "build -t $GITHUB_REPOSITORY:$GITHUB_SHA ."
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: chromko/actions_probe
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-  staging_deploy:
-    name: deploy to host
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: deploy to host
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: deploy to stage
       uses: stoe/actions/ansible-playbook@master
       with:
-        args: infrastructure/playbooks/sample/deploy.yml -i environments/stage/inventory.gcp.yml -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
+        args: infrastructure/playbooks/sample/deploy.yml -i environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
