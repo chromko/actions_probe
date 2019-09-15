@@ -16,15 +16,17 @@ ARG WORKDIR=/app
 RUN set -ex; \
     addgroup ${USER} && adduser -D -s /bin/sh -G ${USER} ${USER};
 
-WORKDIR $WORKDIR
 EXPOSE 5000
 
 COPY requirements.txt ./
 RUN set -ex;\
     pip3 install -r requirements.txt;
 COPY . .
+
 RUN set -xe; \
-    chmod a+x ./docker-entrypoint.sh
+    chmod a+x ./docker-entrypoint.sh; \
+    mkdir data; \
+    chown ${USER}:${USER} ./data
 # USER $USER
-ENTRYPOINT [ "$WORKDIR/docker-entrypoint.sh" ]
-CMD ["python3", "-u", "$WORKDIR/main.py"]
+ENTRYPOINT "./docker-entrypoint.sh"
+CMD ["python3" , "-u", "main.py"]
