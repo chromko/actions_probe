@@ -11,8 +11,8 @@ jobs:
       uses: "pangzineng/Github-Action-One-Click-Docker@master"
       with:
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          - DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          - DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: deploy to stage
       uses: stoe/actions/ansible-playbook@master
