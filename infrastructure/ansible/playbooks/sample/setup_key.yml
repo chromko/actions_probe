@@ -4,7 +4,7 @@
       file:
         dest: "{{ key_file | dirname }}"
         mode: 0700
-        owner: user
+        owner: root
         state: directory
 
     - name: Install ssh key
@@ -12,4 +12,4 @@
         content: "{{ ssh_key }}"
         dest: "{{ key_file }}"
         mode: 0600
-        owner: user
+        owner: root
