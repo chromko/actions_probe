@@ -12,8 +12,11 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
+    - name: add_key
+      uses: "lafernando/github-action-bash/@master"
+      with:
+        args: "echo ${{ secrets.VAULT_PASS }}  > ./pass.vault"
     - name: deploy to stage
       uses: stoe/actions/ansible-playbook@master
       with:
-        args: infrastructure/playbooks/sample/deploy.yml -i environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
+        args: infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
