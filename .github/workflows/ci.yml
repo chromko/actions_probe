@@ -13,9 +13,9 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     - name: add_key
-      # uses: "lafernando/github-action-bash/@master"
+      run: "/bin/bash"
       with:
-        args: "/bin/bash echo ${VAULT_PASS}  > ./pass.vault"
+        args: "echo ${VAULT_PASS}  > ./pass.vault"
       env:
         VAULT_PASS: ${{ secrets.VAULT_PASS }}
     - name: deploy to stage
