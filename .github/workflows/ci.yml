@@ -13,9 +13,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     - name: add_key
-      run: "/bin/bash"
-      with:
-        args: "echo ${VAULT_PASS}  > ./pass.vault"
+      run: "echo ${VAULT_PASS}  > ./pass.vault"
       env:
         VAULT_PASS: ${{ secrets.VAULT_PASS }}
     - name: deploy to stage
