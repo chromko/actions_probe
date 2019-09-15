@@ -15,9 +15,9 @@ jobs:
     - name: add_key
       uses: "lafernando/github-action-bash/@master"
       with:
-        args: "echo ${{ VAULT_PASS }}  > ./pass.vault"
+        args: "echo ${VAULT_PASS}  > ./pass.vault"
       env:
-        VAULT_PASS: ${{secrets.VAULT_PASS}}
+        VAULT_PASS: ${{ secrets.VAULT_PASS }}
     - name: deploy to stage
       uses: stoe/actions/ansible-playbook@master
       with:
