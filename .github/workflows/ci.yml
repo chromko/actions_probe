@@ -19,7 +19,7 @@ jobs:
     - name: deploy to stage
       uses: actions/docker/cli@master
       with:
-        args: run --workdir /github/workspace --rm -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/actions_probe/actions_probe":"/github/workspace" ansible/ansible:ubuntu1404 ansible-playbook infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
+        args: run --workdir /github/workspace --rm -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/actions_probe/actions_probe":"/github/workspace" williamyeh/ansible:ubuntu1404 ansible-playbook infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
       # env:
       #   ACTION_PLAYBOOK_NAME:
       #     infrastructure/ansible/playbooks/sample/deploy.yml
