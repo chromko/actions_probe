@@ -1,4 +1,5 @@
 ---
+- import_playbook: setup_key.yml
 - hosts: label_service_bdays
   become_user: root
   become: yes
