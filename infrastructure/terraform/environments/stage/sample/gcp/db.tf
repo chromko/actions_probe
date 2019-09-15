@@ -25,8 +25,9 @@ resource "google_compute_subnetwork" "env-subnetwork" {
 
 }
 resource "google_compute_instance" "gcp-test" {
-  name         = "gcp-test-ip"
-  machine_type = "custom-2-2048"
+  count = 1
+  name         = "${var.project_name}-${var.project_env}-${var.project_app}-app-${count.index}"
+  machine_type = "f1-micro"
   zone         = "${var.google_region}-c"
   labels = {
     env = var.project_env
@@ -94,9 +95,7 @@ resource "google_compute_target_pool" "default" {
   name = "instance-pool"
   region = var.google_region
 
-  instances = [
-    google_compute_instance.gcp-test.self_link
-  ]
+  instances = google_compute_instance.gcp-test[*].self_link
 }
 
 
