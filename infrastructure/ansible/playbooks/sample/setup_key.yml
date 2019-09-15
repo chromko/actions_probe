@@ -13,5 +13,3 @@
         dest: "{{ key_file }}"
         mode: 0600
         owner: root
-    - debug:
-        msg: "{{ lookup('file', key_file)}}"
