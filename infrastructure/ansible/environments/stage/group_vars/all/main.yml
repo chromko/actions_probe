@@ -1,2 +1,2 @@
 env: stage
-key_file: ./.ssh/sample_id_rsa
+key_file: /github/workspace/.ssh/sample_id_rsa
