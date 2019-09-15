@@ -20,7 +20,7 @@ jobs:
       uses: actions/docker/cli@master
       with:
         args: run --workdir /github/workspace --rm -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/actions_probe/actions_probe":"/github/workspace" williamyeh/ansible:ubuntu14.04 ansible-playbook infrastructure/ansible/playbooks/sample/setup_key.yml -i infrastructure/ansible/environments/stage/static_hosts -e key_file=/github/home/.ssh/sample_id_rsa -vvv
-    - run: "cat /github/home/.ssh/sample_id_rsa"
+    # - run: "cat /github/home/.ssh/sample_id_rsa"
     - name: deploy to stage
       uses: actions/docker/cli@master
       with:
