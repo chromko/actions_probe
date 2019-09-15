@@ -27,6 +27,6 @@ RUN set -xe; \
     chmod a+x ./docker-entrypoint.sh; \
     mkdir data; \
     chown ${USER}:${USER} ./data
-# USER $USER
-ENTRYPOINT "./docker-entrypoint.sh"
+USER $USER
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["python3" , "-u", "main.py"]

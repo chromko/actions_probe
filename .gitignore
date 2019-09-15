@@ -109,3 +109,4 @@ TASK.md
 .vscode
 *.tfstate
 .terraform/
+*.vault
