@@ -1,8 +1,5 @@
 - hosts: localhost
   tasks:
-    - debug:
-        msg: "{{ lookup('file', ssh_key)}}"
-
     - name: Ensure .ssh directory exists.
       file:
         dest: "{{ key_file | dirname }}"
@@ -16,3 +13,5 @@
         dest: "{{ key_file }}"
         mode: 0600
         owner: root
+    - debug:
+        msg: "{{ lookup('file', key_file)}}"
