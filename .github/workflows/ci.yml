@@ -17,6 +17,9 @@ jobs:
       env:
         VAULT_PASS: ${{ secrets.VAULT_PASS }}
     - name: deploy to stage
-      uses: stoe/actions/ansible-playbook@master
+      uses: ansible/ansible
       with:
-        args: infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
+        args: ansible-playbook infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
+      # env:
+      #   ACTION_PLAYBOOK_NAME:
+      #     infrastructure/ansible/playbooks/sample/deploy.yml
