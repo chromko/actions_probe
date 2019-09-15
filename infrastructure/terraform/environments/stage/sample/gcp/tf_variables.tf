@@ -36,3 +36,17 @@ variable "project_app" {
 variable "machine_type" {
   description = "test"
 }
+
+variable "project_services" {
+  type = list(string)
+  default = [
+    "cloudkms.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "container.googleapis.com",
+    "compute.googleapis.com",
+    "iam.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+  ]
+  description = "List of services to enable on the project."
+}

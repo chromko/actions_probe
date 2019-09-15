@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket  = "tf-states"
+    bucket  = "chromko-tmp-bucket"
     prefix    = "stage/sample/gcp"
   }
 }
