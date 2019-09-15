@@ -16,10 +16,14 @@ jobs:
       run: "echo ${VAULT_PASS}  > ./pass.vault"
       env:
         VAULT_PASS: ${{ secrets.VAULT_PASS }}
+    - name: add_ssh_key
+      uses: actions/docker/cli@master
+      with:
+        args: run --workdir /github/workspace --rm -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/actions_probe/actions_probe":"/github/workspace" williamyeh/ansible:ubuntu14.04 ansible-playbook infrastructure/ansible/playbooks/sample/setup_key.yml
     - name: deploy to stage
       uses: actions/docker/cli@master
       with:
-        args: run --workdir /github/workspace --rm -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/actions_probe/actions_probe":"/github/workspace" williamyeh/ansible:ubuntu14.04 ansible-playbook infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA
+        args: run --workdir /github/workspace --rm -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/actions_probe/actions_probe":"/github/workspace" williamyeh/ansible:ubuntu14.04 ansible-playbook infrastructure/ansible/playbooks/sample/deploy.yml -i infrastructure/ansible/environments/stage/static_hosts -e app_docker_image=$GITHUB_REPOSITORY -e app_docker_tag=$GITHUB_SHA --private-key ./.ssh/sample_id_rsa --user test
       # env:
       #   ACTION_PLAYBOOK_NAME:
       #     infrastructure/ansible/playbooks/sample/deploy.yml
