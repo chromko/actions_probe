@@ -3,9 +3,6 @@ nginx_sites:
     - listen   80
     - server_name {{inventory_hostname}}
     - location /hello/ {
-          # allow 5.8.180.197;
-          # deny all;
-          # access_log   off;
           proxy_pass http://localhost:8080;
           proxy_http_version 1.1;
       }

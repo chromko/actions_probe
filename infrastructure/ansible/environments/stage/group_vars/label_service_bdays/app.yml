@@ -1,5 +1,5 @@
 app_name: bdays
 app_memory: 256M
-app_docker_tag: latest
+app_docker_tag: add-ci
 app_docker_image: chromko/actions_probe
 app_command: ""

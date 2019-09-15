@@ -3,3 +3,4 @@ app_memory:
 app_docker_tag:
 app_docker_image:
 app_command:
+app_dir: /opt/app
