@@ -1,0 +1,20 @@
+- name: Install required packages
+  package:
+    name: redhat-lsb-core
+    state: present
+
+- name: download nginx {{ nginx_version }} sources
+  get_url:
+    url: http://hg.nginx.org/pkg-oss/raw-file/default/build_module.sh
+    dest: /tmp/
+    mode: u+x
+
+- name: build module
+  shell: "yes 'vts' | LANG=C ./build_module.sh -v {{ nginx_version.split('-')[0]}} https://github.com/vozlt/nginx-module-vts.git"
+  args:
+    chdir: /tmp/
+    creates: /root/rpmbuild/RPMS/x86_64/nginx-module-vts-{{ nginx_version.split('-')[0]}}-1.el7_4.ngx.x86_64.rpm
+
+- name: install nginx module
+  yum:
+    name: /root/rpmbuild/RPMS/x86_64/nginx-module-vts-{{ nginx_version.split('-')[0]}}-1.el7_4.ngx.x86_64.rpm

@@ -1,0 +1,9 @@
+---
+- hosts: label_service_bdays
+  become_user: root
+  become: yes
+  roles:
+    - role: deploy-app
+      tags:
+        - app
+        - deploy

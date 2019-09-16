@@ -1,0 +1,14 @@
+- name: "{{ app_name }} create directory for .env files"
+  file:
+    path: "{{app_dir}}/{{ app_name }}"
+    state: directory
+
+- name: "{{ app_name }} Send service {{ service_name }} file"
+  template: src="systemd-unit.service" dest="/etc/systemd/system/{{ app_name }}.service"
+
+- name: "{{ app_name }} Restart {{ app_name }} container"
+  systemd:
+    name: "{{ app_name }}.service"
+    state: restarted
+    daemon-reload: yes
+    enabled: yes

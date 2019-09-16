@@ -25,7 +25,7 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-DATABASE = "users.db"
+DATABASE = "./data/users.db"
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 init_db()

@@ -1,0 +1,7 @@
+---
+- hosts: label_service_bdays
+  become_user: root
+  become: yes
+  roles:
+    - role: docker
+    - role: nginx
