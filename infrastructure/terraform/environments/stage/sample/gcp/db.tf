@@ -8,22 +8,22 @@ resource "google_project_service" "service" {
   disable_on_destroy = false
 }
 
-resource "google_compute_network" "env-vpc" {
-  name = "${var.project_name}-${var.project_env}-vpc"
-  auto_create_subnetworks = "false"
-  provider                = "google-beta"
-  project = var.google_project
-}
+// resource "google_compute_network" "env-vpc" {
+//   name = "${var.project_name}-${var.project_env}-vpc"
+//   auto_create_subnetworks = "false"
+//   provider                = "google-beta"
+//   project = var.google_project
+// }
 
-resource "google_compute_subnetwork" "env-subnetwork" {
-  name          = "${var.project_name}-${var.project_env}-subnetwork"
-  network       = google_compute_network.env-vpc.self_link
-  region        = var.google_region
-  ip_cidr_range = "10.10.0.0/16"
+// resource "google_compute_subnetwork" "env-subnetwork" {
+//   name          = "${var.project_name}-${var.project_env}-subnetwork"
+//   network       = google_compute_network.env-vpc.self_link
+//   region        = var.google_region
+//   ip_cidr_range = "10.10.0.0/16"
 
-  private_ip_google_access = true
+//   private_ip_google_access = true
 
-}
+// }
 
 resource "google_compute_instance" "gcp-test" {
   count = 2
@@ -121,7 +121,7 @@ resource "google_compute_target_pool" "default" {
 
 resource "google_compute_firewall" "default" {
   name    = "${var.project_name}-${var.project_env}-allow-internal"
-  network       = google_compute_network.env-vpc.self_link
+  network       = "default"
 
   allow {
     protocol = "icmp"
@@ -131,6 +131,5 @@ resource "google_compute_firewall" "default" {
     protocol = "tcp"
     ports    = ["80"]
   }
-
-  source_ranges  = ["10.0.0.0/8"]
+  source_ranges  = ["0.0.0.0/0"]
 }
