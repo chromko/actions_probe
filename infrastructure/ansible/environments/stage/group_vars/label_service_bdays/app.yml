@@ -7,3 +7,4 @@ db_host: "35.188.184.188"
 app_env_vars: |
   DATABASE_URI= postgresql://{{app_name}}:{{app_password}}@{{ db_host }}:5432/{{app_name}}_{{env}}'
 app_job_command: "python app/manage.py db upgrade"
+app_port: "5000"

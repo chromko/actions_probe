@@ -15,6 +15,7 @@ ExecStartPre=-/usr/bin/docker rm {{ app_name }}
 ExecStart=/usr/bin/docker run --name {{ app_name }} \
                                 --log-opt labels={{ env }},{{ app_name }} \
                                 -a stderr -e \
+                                -p {{app_port}}:{{app_port}}
                                 --env-file={{app_dir}}/.env.{{ app_name }}.{{ env }}\
                                 --memory {{ app_memory }} \
                                 {{ app_docker_image }}:{{ app_docker_tag[0:7]}} {{ app_command  }}
