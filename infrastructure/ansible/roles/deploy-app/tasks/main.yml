@@ -13,7 +13,7 @@
   template: src="systemd-unit.service" dest="/etc/systemd/system/{{ app_name }}.service"
 
 - name: "{{ app_name }} execute job"
-  command: "docker run --pull --rm --env-file {{app_dir}}/.env.{{ app_name }}.{{ env }} {{ app_docker_image }}:{{app_docker_tag[0:7]}}  {{ app_job_command }}"
+  command: "docker run --pull=always --rm --env-file {{app_dir}}/.env.{{ app_name }}.{{ env }} {{ app_docker_image }}:{{app_docker_tag[0:7]}}  {{ app_job_command }}"
   when: app_job_command is defined and app_job_command != ""
   run_once: True
   tags:
