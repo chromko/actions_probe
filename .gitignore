@@ -107,3 +107,6 @@ TASK.md
 *.db
 
 .vscode
+*.tfstate
+.terraform/
+*.vault

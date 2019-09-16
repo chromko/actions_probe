@@ -1,0 +1,2 @@
+- include: modules/vts_module.yml
+  when: nginx_vts_module

@@ -1,0 +1,33 @@
+- name: "{{ app_name }} create directory for .env files"
+  file:
+    path: "{{app_dir}}/{{ app_name }}"
+    state: directory
+
+- name: "{{ app_name }} create .env file"
+  template:
+    src: .env.template.j2
+    dest: "{{app_dir}}/.env.{{ app_name }}.{{ env }}"
+
+
+- name: "{{ app_name }} Send service  file"
+  template: src="systemd-unit.service" dest="/etc/systemd/system/{{ app_name }}.service"
+
+- name: "{{ app_name }} pull image"
+  command: "docker pull {{ app_docker_image }}:{{app_docker_tag[0:7]}}"
+  when: app_job_command is defined and app_job_command != ""
+  tags:
+    - test
+
+- name: "{{ app_name }} execute job"
+  command: "docker run --rm --env-file {{app_dir}}/.env.{{ app_name }}.{{ env }} {{ app_docker_image }}:{{app_docker_tag[0:7]}}  {{ app_job_command }}"
+  when: app_job_command is defined and app_job_command != ""
+  run_once: True
+  tags:
+    - test
+
+- name: "{{ app_name }} Restart {{ app_name }} container"
+  systemd:
+    name: "{{ app_name }}.service"
+    state: restarted
+    daemon-reload: yes
+    enabled: yes

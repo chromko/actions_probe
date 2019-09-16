@@ -1,0 +1,2 @@
+env: stage
+key_file: /temp/secrets/sample_id_rsa

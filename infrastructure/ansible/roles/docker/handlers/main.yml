@@ -1,0 +1,14 @@
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+
+- name: restart td-agent-bit
+  service:
+    name: td-agent-bit
+    state: restarted
+
+- name: restart filebeat
+  service:
+    name: filebeat
+    state: restarted

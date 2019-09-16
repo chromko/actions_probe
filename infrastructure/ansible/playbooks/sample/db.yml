@@ -1,0 +1,7 @@
+---
+- name: Provision db
+  hosts: label_service_bdays:&label_component_db
+  become: yes
+  become_user: root
+  roles:
+    - role: postgresql

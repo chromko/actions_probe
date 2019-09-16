@@ -1,0 +1,14 @@
+---
+# docker_version: "18.03.1.ce-1.el7.centos"
+# docker_registry: "registry.service.consul"
+# docker_registry_dc1: "registry.service.dc1.consul"
+# docker_registry_harbor: "harbor.service.dc3.consul"
+# docker_driver_v4: "overlay2"
+# docker_driver_v3: "overlay"
+# docker_repo: "https://download.docker.com/linux/centos/docker-ce.repo"
+
+# docker_fluentbit_input: true
+# docker_config:
+#   insecure-registries: ["{{ docker_registry }}","{{ docker_registry_dc1 }}","{{ docker_registry_harbor }}"]
+#   storage-driver: "overlay2"
+#   dns: ["10.10.0.5", "10.10.0.6"]
