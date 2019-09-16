@@ -3,7 +3,12 @@
     path: "{{app_dir}}/{{ app_name }}"
     state: directory
 
-- name: "{{ app_name }} Send service {{ service_name }} file"
+- name: "{{ app.app_name }} create .env file"
+  template:
+    src: .env.template.j2
+    dest: "{{app_dir}}/.env.{{app.app_name}}.{{ env }}"
+
+- name: "{{ app_name }} Send service  file"
   template: src="systemd-unit.service" dest="/etc/systemd/system/{{ app_name }}.service"
 
 - name: "{{ app_name }} Restart {{ app_name }} container"

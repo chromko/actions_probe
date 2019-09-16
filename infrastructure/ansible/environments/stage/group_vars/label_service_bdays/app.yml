@@ -3,3 +3,6 @@ app_memory: 256M
 app_docker_tag: add-ci
 app_docker_image: chromko/actions_probe
 app_command: ""
+db_host: "35.188.184.188"
+app_env_vars:
+  DATABASE_URI: postgresql://{{app_name}}:{{app_password}}@{{ db_host }}:5432/{{app_name}}_{{env}}'

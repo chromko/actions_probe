@@ -33,7 +33,7 @@ POSTGRES = {
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = ""
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+app.config['DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 db.init_app(app)
 # init_db()
 
