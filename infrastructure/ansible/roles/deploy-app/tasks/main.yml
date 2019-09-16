@@ -12,7 +12,7 @@
 - name: "{{ app_name }} Send service  file"
   template: src="systemd-unit.service" dest="/etc/systemd/system/{{ app_name }}.service"
 
-- name: "{{ app_name }} execute job"
+- name: "{{ app_name }} pull image"
   command: "docker pull {{ app_docker_image }}:{{app_docker_tag[0:7]}}"
   when: app_job_command is defined and app_job_command != ""
   tags:
