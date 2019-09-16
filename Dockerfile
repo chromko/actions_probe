@@ -20,7 +20,7 @@ EXPOSE 5000
 
 COPY requirements.txt ./
 RUN set -ex;\
-    apk add postgresql-dev gcc linux-headers --virtual .dev-dep; \
+    apk add postgresql-dev gcc linux-headers  musl-dev --virtual .dev-dep; \
     pip3 install -r requirements.txt; \
     apk del .dev-dep
 COPY . .
