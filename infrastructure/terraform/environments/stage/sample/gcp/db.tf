@@ -118,13 +118,13 @@ resource "google_compute_target_pool" "default" {
   instances = google_compute_instance.gcp-test[*].self_link
 
   health_checks = [
-    google_compute_http_health_check.internal-health-check.name}",
+    google_compute_http_health_check.internal-health-check.name,
   ]
 
 }
 
 resource "google_compute_http_health_check" "internal-health-check" {
-  name         = "authentication-health-check"
+  name         = "health-check"
   request_path = "/health"
 
  timeout_sec        = 1
