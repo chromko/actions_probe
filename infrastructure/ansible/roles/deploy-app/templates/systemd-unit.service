@@ -17,8 +17,7 @@ ExecStart=/usr/bin/docker run --name {{ app_name }} \
                                 -a stderr -e \
                                 --env-file={{app_dir}}/.env.{{ app_name }}.{{ env }}\
                                 --memory {{ app_memory }} \
-                                {{ app_docker_image }}:{{ app_docker_tag}} \
-                                {{ app_command  }}
+                                {{ app_docker_image }}:{{ app_docker_tag[0:7]}} {{ app_command  }}
 
 ExecStop=/usr/bin/docker stop {{ app_name }}
 
