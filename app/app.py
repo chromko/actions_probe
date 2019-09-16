@@ -83,6 +83,11 @@ def count_birthday_delay(date):
     return diff
 
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return make_response("healthy", 200)
+
+
 @app.route("/hello/<username>", methods=["PUT"])
 @validate_username
 def update_user_bd(username):
