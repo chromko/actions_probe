@@ -20,7 +20,7 @@ EXPOSE 5000
 
 COPY requirements.txt ./
 RUN set -ex;\
-    apk add postgresql-dev; \
+    apk add postgresql-dev gcc; \
     pip3 install -r requirements.txt;
 COPY . .
 
