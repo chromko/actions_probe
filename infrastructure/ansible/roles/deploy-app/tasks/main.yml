@@ -8,8 +8,17 @@
     src: .env.template.j2
     dest: "{{app_dir}}/.env.{{app_name}}.{{ env }}"
 
+
 - name: "{{ app_name }} Send service  file"
   template: src="systemd-unit.service" dest="/etc/systemd/system/{{ app_name }}.service"
+
+- name: "{{ app.app_name }} execute job {{ job_item.key }}"
+  command: "docker run --rm --env-file {{app_dir}}/.env.{{app_name }}.{{ env }} {{ app_docker_image }}:{{app_docker_tag}}  {{ app_job_command }}"
+  when: app_job_command is defined and app_job_command != ""
+  loop_control:
+    loop_var: job_item
+  tags:
+    - test
 
 - name: "{{ app_name }} Restart {{ app_name }} container"
   systemd:
