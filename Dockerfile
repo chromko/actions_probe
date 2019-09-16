@@ -30,4 +30,4 @@ RUN set -xe; \
     chown ${USER}:${USER} ./data
 USER $USER
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["python3" , "-u", "main.py"]
+CMD ["python3" , "-u", "app/app.py"]
