@@ -1,9 +1,4 @@
 ---
-- hosts: localhost
-  tasks:
-    - debug:
-        msg: "{{ lookup('file', key_file)}}"
-
 - hosts: label_service_bdays
   become_user: root
   become: yes
