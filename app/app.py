@@ -89,7 +89,11 @@ def update_user_bd(username):
     date = request.json['dateOfBirth']
     if validate_date(date):
         try:
-            rows = User.query.filter_by(username=username).update({'date': date})
+            user = User.query.filter_by(username=username)
+            if not user:
+                db.session.add(User(username=username, date=date))
+            else:
+                User.query.filter_by(username=username).update({'date': date})
             db.session.commit()
         except sqlite3.DatabaseError as err:
             print("Error: ", err)

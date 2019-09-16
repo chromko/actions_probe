@@ -5,7 +5,7 @@ postgresql_databases:
 
 # List of users to be created (optional)
 postgresql_users:
-  - name: "app_user"
+  - name: "{{app_name}}"
     pass: md5{{ (app_password + app_name) | hash('md5') }}
     encrypted: yes       # denotes if the password is already encrypted.
     role_attr_flags: "SUPERUSER" # role attribute flags
