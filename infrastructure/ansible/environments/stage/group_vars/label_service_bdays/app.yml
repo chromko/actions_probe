@@ -5,6 +5,6 @@ app_docker_image: chromko/actions_probe
 app_command: ""
 db_host: "10.128.0.6"
 app_env_vars: |
-  DATABASE_URI= postgresql://{{app_name}}:{{app_password}}@{{ db_host }}:5432/{{app_name}}_{{env}}
+  DATABASE_URI=postgresql://{{app_name}}:{{app_password}}@{{ db_host }}:5432/{{app_name}}_{{env}}
 app_job_command: "python app/manage.py db upgrade"
 app_port: "5000"
