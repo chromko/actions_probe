@@ -24,8 +24,9 @@ resource "google_compute_subnetwork" "env-subnetwork" {
   private_ip_google_access = true
 
 }
+
 resource "google_compute_instance" "gcp-test" {
-  count = 1
+  count = 2
   name         = "${var.project_name}-${var.project_env}-${var.project_app}-app-${count.index}"
   machine_type = "f1-micro"
   zone         = "${var.google_region}-c"
@@ -61,23 +62,42 @@ resource "google_compute_instance" "gcp-test" {
 }
 
 
-// resource "google_compute_instance_from_template" "service-app-1" {
-//   name           = "${var.project_name}-${var.project_env}-${var.project_app}-app-1"
-//   source_instance_template = "${google_compute_instance_template.tpl.self_link}"
+resource "google_compute_instance" "gcp-test-db" {
+  count = 1
+  name         = "${var.project_name}-${var.project_env}-${var.project_app}-db-${count.index}"
+  machine_type = "g1-small"
+  zone         = "${var.google_region}-c"
+  labels = {
+    env = var.project_env
+    project = var.project_name
+    app = var.project_app
+    service = var.project_service
+    component: "db"
+  }
+  tags = [var.project_env,var.project_name,var.project_service,"db"]
 
-//   // Override fields from instance template
-//   machine_type = var.machine_type
-//   allow_stopping_for_update = true
-//   labels = {
-//     env = var.project_env
-//     project = var.project_name
-//     app = var.project_app
-//     service = var.project_service
-//     component: "app"
-//   }
-//   tags = [var.project_env,var.project_name,var.project_service,"app"]
+  boot_disk {
+    initialize_params {
 
-// }
+     image = "centos-cloud/centos-7"
+    }
+    auto_delete = true
+    // boot = true
+  }
+
+  network_interface {
+    network = "default"
+
+        access_config {
+          // Ephemeral IP
+        }
+  }
+
+  metadata = {
+    ssh-keys = join("\n", [for user, key in var.ssh_keys : "${user}:${key}"])
+  }
+}
+
 
 resource "google_compute_address" "env-public" {
   name = "${var.project_name}-${var.project_env}-appserver-ip"

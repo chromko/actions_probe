@@ -1,0 +1,17 @@
+# file: postgresql/tasks/users_privileges.yml
+
+- name: Grant extra privileges
+  postgresql_privs:
+    database: "{{ item.database | default(omit) }}"
+    roles: "{{ item.roles }}"
+    type: "{{ item.type | default(omit) }}"
+    objs: "{{ item.objs | default(omit) }}"
+    privs: "{{ item.privs | default(omit) }}"
+    schema: "{{ item.schema | default(omit) }}"
+    grant_option: "{{ item.grant_option | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    port: "{{ postgresql_port }}"
+  with_items: "{{ postgresql_user_privileges }}"
+  become: yes
+  become_user: "{{postgresql_admin_user}}"
+  when: postgresql_user_privileges|length > 0
