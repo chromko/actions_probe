@@ -1,4 +1,5 @@
 from flask import Flask, request, make_response, Response, jsonify, abort, g
+from flask_sqlalchemy import SQLAlchemy
 from threading import Thread
 from functools import wraps
 
@@ -9,6 +10,10 @@ import logging
 import requests
 import datetime
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    spotify_id = db.Column(db.String(200), unique=False, nullable=True)
+    spotify_token = db.Column(db.String(200), unique=False, nullable=True)
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -28,6 +33,7 @@ def init_db():
 DATABASE = "./data/users.db"
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
+db = SQLAlchemy(app)
 init_db()
 
 
