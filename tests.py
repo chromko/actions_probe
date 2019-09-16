@@ -28,31 +28,12 @@ class BaseTest(unittest.TestCase):
         self.notFountStatus = "404 Not Found"
         self.noContentOKStatus = "204 No Content"
 
-        # self.users_bd = ""
-        # self.app = app.test_client()
-        # self.db = get_db(db_name)
-        # init_db(self.db, file="seed.sql")
 
     def test_validate_username_invalids(self):
         for testCase, testValue in self.invalidUsernames.items():
             resp = self.app.get('/hello/' + testValue)
             print(testCase + ":" + testValue)
             self.assertEqual(resp.status, self.badRequestStatus)
-
-    # def test_validate_username_valids(self):
-    #     for testCase, testValue in self.validUsernames.items():
-    #         resp = self.app.get('/hello/' + testValue)
-    #         print(testCase + ":" + testValue)
-    #         self.assertEqual(resp.status, self.noContentOKStatus)
-
-    # def test_get_user_bd(self):
-    #     with app.test_client() as client:
-
-
-    # def count_birthday_delay(self):
-
-
-    # def validate_date():
 
 
 if __name__ == '__main__':
