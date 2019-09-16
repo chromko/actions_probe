@@ -1,0 +1,15 @@
+---
+- hosts: label_service_bdays:&label_component_app
+  become_user: root
+  become: yes
+  roles:
+    - role: docker
+    - role: nginx
+  tasks:
+    - name: Set httpd_can_network_connect flag on and keep it persistent across reboots
+      seboolean:
+        name: httpd_can_network_connect
+        state: yes
+        persistent: yes
+
+- import_playbook: deploy.yml

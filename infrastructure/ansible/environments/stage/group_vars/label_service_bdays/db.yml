@@ -1,0 +1,248 @@
+# List of databases to be created (optional)
+postgresql_databases:
+  - name: "{{app_name}}_{{env}}"
+    owner: "{{postgresql_admin_user}}"          # optional; specify the owner of the database
+
+# List of users to be created (optional)
+postgresql_users:
+  - name: "app_user"
+    pass: md5{{ (app_password + app_name) | hash('md5') }}
+    encrypted: yes       # denotes if the password is already encrypted.
+    role_attr_flags: "SUPERUSER" # role attribute flags
+
+# User custom
+postgresql_pg_hba_custom:
+  # - { type: host,  database: all, user: all, address: "10.7.0.0/16", method: "md5", comment: "IPv4 flops connections:" }
+  - { type: host,  database: all, user: all, address: "10.0.0.0/8", method: "md5", comment: "IPv4 croc connections:" }
+  # - { type: host,  database: "replication", user: "{{ postgresql_replication_user }}", address: "10.0.0.0/12", method: "md5", comment: "Replication connection:" }
+
+# Basic settings
+postgresql_version: 11
+
+postgresql_cluster_name: data
+
+postgresql_ext_install_contrib: yes
+postgresql_ext_install_dev_headers: yes
+
+postgresql_admin_user: "postgres"
+# postgresql_default_auth_method: "trust"
+
+postgresql_service_user: "postgres"
+postgresql_service_group: "postgres"
+
+# postgresql_databases:
+#   - name: "messages_{{env}}"
+#     owner: "postgres"          # optional; specify the owner of the database
+
+
+# postgresql.conf
+
+#------------------------------------------------------------------------------
+# FILE LOCATIONS
+#------------------------------------------------------------------------------
+
+# Location of postgres configuration files here
+postgresql_conf_directory: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+# HBA (Host Based Authentication) file
+postgresql_hba_file: "{{ postgresql_conf_directory }}/pg_hba.conf"
+# Ident configuration file
+postgresql_ident_file: "{{ postgresql_conf_directory }}/pg_ident.conf"
+# Use data in another directory
+postgresql_varlib_directory_name: "pgsql"
+postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_wal_directory: ""
+postgresql_pid_directory: "/var/run/postgresql"
+# If external_pid_file is not explicitly set, on extra PID file is written
+postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+postgresql_listen_addresses:
+  - "*"
+postgresql_port: 5432
+
+postgresql_max_connections: 100
+postgresql_superuser_reserved_connections: 5
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+
+# - Memory -
+
+postgresql_shared_buffers:       1GB # min 128kB
+
+postgresql_max_prepared_transactions: 0 # zero disables the feature
+
+postgresql_work_mem:                   20MB      # min 64kB
+postgresql_maintenance_work_mem:       256MB     # min 1MB
+postgresql_dynamic_shared_memory_type: "posix"  # the default is the first option
+
+# - Kernel Resource Usage -
+
+postgresql_shared_preload_libraries: [pg_stat_statements]
+
+
+#------------------------------------------------------------------------------
+# WRITE AHEAD LOG
+#------------------------------------------------------------------------------
+
+# - Settings -
+
+postgresql_wal_level: "hot_standby"   # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
+postgresql_fsync:     on          # flush data to disk for crash safety
+                                          # (turning this off can cause
+                                          # unrecoverable data corruption)
+
+# Synchronization level:
+# - off
+# - local
+# - remote_write
+# - remote_apply (>= 9.6)
+# - on
+postgresql_synchronous_commit: "on"
+
+# - Checkpoints -
+
+postgresql_max_wal_size:                 2GB   # (>= 9.5)
+postgresql_min_wal_size:                 1GB  # (>= 9.5)
+postgresql_checkpoint_timeout:           15min  # range 30s-1d
+
+
+# - Archiving -
+
+# allows archiving to be done
+postgresql_archive_mode: on   # Should be a string with quotes, but all templates need fixing first
+
+# Command to use to archive a logfile segment.
+# Placeholders: %p = path of file to archive
+#               %f = file name only
+# e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
+postgresql_archive_command: "cd ."
+
+# force a logfile segment switch after this
+postgresql_archive_timeout: 1000
+
+
+
+#------------------------------------------------------------------------------
+# REPLICATION
+#------------------------------------------------------------------------------
+
+# - Sending Server(s) -
+
+# Set these on the master and on any standby that will send replication data.
+
+# max number of walsender processes
+postgresql_max_wal_senders: 5
+
+postgresql_wal_keep_segments:  200    # in logfile segments, 16MB each; 0 disables
+
+postgresql_track_commit_timestamp: off # (>= 9.5)
+
+# - Master Server -
+
+
+# - Standby Servers -
+
+# "on" allows queries during recovery
+postgresql_hot_standby: on
+
+#------------------------------------------------------------------------------
+# QUERY TUNING
+#------------------------------------------------------------------------------
+
+# - Planner Method Configuration -
+postgresql_effective_cache_size:       3GB
+
+#------------------------------------------------------------------------------
+# ERROR REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+# - Where to Log -
+
+# Valid values are combinations of stderr, csvlog, syslog, and eventlog.
+# depending on platform. Csvlog requires logging_collector to be on.
+postgresql_log_destination:            "stderr"
+
+# Enable capturing of stderr and csvlog into log files.
+# Required to be on for csvlogs.
+postgresql_logging_collector:          on
+
+# These are only used if logging_collector is on:
+
+# Directory where log files are written, can be absolute or relative to PGDATA
+postgresql_log_directory:              "pg_log"
+# Log file name pattern, can include strftime() escapes
+postgresql_log_filename:               "postgresql-%a.log"
+
+postgresql_log_truncate_on_rotation:   off
+# Automatic rotation of logfiles will happen after that time.
+postgresql_log_rotation_age:           1d
+# Automatic rotation of logfiles will happen after that much log output.
+postgresql_log_rotation_size:          0
+
+# -1 is disabled, 0 logs all statements and their durations, > 0 logs only
+# statements running at least this number of milliseconds
+postgresql_log_min_duration_statement: 450
+
+
+# - What to Log -
+postgresql_log_checkpoints:       on
+postgresql_log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+postgresql_log_timezone:   "UTC"
+
+#------------------------------------------------------------------------------
+# RUNTIME STATISTICS
+#------------------------------------------------------------------------------
+
+# - Query/Index Statistics Collector -
+postgresql_stats_temp_directory:      "pg_stat_tmp"
+
+#------------------------------------------------------------------------------
+# AUTOVACUUM PARAMETERS
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# CLIENT CONNECTION DEFAULTS
+#------------------------------------------------------------------------------
+
+# - Statement Behavior -
+postgresql_statement_timeout:                     30000           # in milliseconds, 0 is disabled
+postgresql_lock_timeout:                          30000           # in milliseconds, 0 is disabled (>= 9.3)
+
+# - Locale and Formatting -
+
+postgresql_datestyle:
+  - "iso"
+  - "mdy"
+postgresql_timezone:           "UTC"
+
+# Select the set of available time zone abbreviations. Currently, there are:
+#   Default
+#   Australia
+#   India
+# You can create your own file in `share/timezonesets/`.
+postgresql_timezone_abbreviations: "Default"
+
+postgresql_extra_float_digits: 0          # min -15, max 3
+postgresql_client_encoding:    False  # actually defaults to database encoding
+                                      # 'sql_ascii', 'UTF8', ...
+
+# locale for system error message
+postgresql_lc_messages: "{{ postgresql_locale }}"
+# locale for monetary formatting
+postgresql_lc_monetary: "{{ postgresql_locale }}"
+# locale for number formatting
+postgresql_lc_numeric: "{{ postgresql_locale }}"
+# locale for time formatting
+postgresql_lc_time: "{{ postgresql_locale }}"
+
+postgresql_default_text_search_config: "pg_catalog.russian"
+
+#------------------------------------------------------------------------------
+# LOCK MANAGEMENT
+#------------------------------------------------------------------------------
+

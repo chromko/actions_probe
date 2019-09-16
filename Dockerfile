@@ -20,13 +20,14 @@ EXPOSE 5000
 
 COPY requirements.txt ./
 RUN set -ex;\
-    pip3 install -r requirements.txt;
+    apk add postgresql-dev gcc linux-headers  musl-dev --virtual .dev-dep; \
+    pip3 install -r requirements.txt; \
+    apk del .dev-dep
 COPY . .
 
 RUN set -xe; \
-    chmod a+x ./docker-entrypoint.sh; \
-    mkdir data; \
-    chown ${USER}:${USER} ./data
+    chmod a+x ./docker-entrypoint.sh;
+
 USER $USER
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["python3" , "-u", "main.py"]
+CMD ["python3" , "-u", "app/app.py"]
