@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, Response, jsonify, abort, g,
+from flask import Flask, request, make_response, Response, jsonify, abort, g
 from flask_sqlalchemy import SQLAlchemy
 from threading import Thread
 from functools import wraps
@@ -11,30 +11,10 @@ import requests
 import datetime
 from models import db, User
 
-# def get_db():
-#     db = getattr(g, '_database', None)
-#     if db is None:
-#         db = g._database = sqlite3.connect(DATABASE)
-#     return db
-
-
-# def init_db():
-    # User.create_all()
-
-
-POSTGRES = {
-    'user': 'postgres',
-    'pw': 'password',
-    'db': 'postgres',
-    'host': 'localhost',
-    'port': '5432',
-}
-
-
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = ""
-app.config['DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 db.init_app(app)
 # init_db()
 
@@ -52,7 +32,7 @@ def not_found(error):
 
 
 @app.errorhandler(400)
-def bad_requestq    (error):
+def bad_request(error):
     return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
@@ -134,5 +114,4 @@ def get_user_bd(username):
         return None
 
 if __name__ == "__main__":
-    app = create_app()
     app.run(host="0.0.0.0")
