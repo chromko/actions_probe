@@ -89,8 +89,8 @@ def update_user_bd(username):
     date = request.json['dateOfBirth']
     if validate_date(date):
         try:
-            user = User.query.filter_by(username=username)
-            if not user:
+            user = User.query.filter_by(username=username).first()
+            if user is None:
                 db.session.add(User(username=username, date=date))
             else:
                 User.query.filter_by(username=username).update({'date': date})
