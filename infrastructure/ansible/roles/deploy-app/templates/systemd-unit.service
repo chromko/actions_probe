@@ -14,7 +14,7 @@ ExecStartPre=-/usr/bin/docker kill {{ app_name }}
 ExecStartPre=-/usr/bin/docker rm {{ app_name }}
 ExecStart=/usr/bin/docker run --name {{ app_name }} \
                                 --log-opt labels={{ env }},{{ app_name }} \
-                                -a stderr -e \
+                                -a stderr \
                                 -p {{app_port}}:{{app_port}} \
                                 --env-file={{app_dir}}/.env.{{ app_name }}.{{ env }} \
                                 --memory {{ app_memory }} \

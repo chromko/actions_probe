@@ -3,7 +3,7 @@
     path: "{{app_dir}}/{{ app_name }}"
     state: directory
 
-- name: "{{ app.app_name }} create .env file"
+- name: "{{ app_name }} create .env file"
   template:
     src: .env.template.j2
     dest: "{{app_dir}}/.env.{{ app_name }}.{{ env }}"
