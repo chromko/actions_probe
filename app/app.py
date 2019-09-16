@@ -1,5 +1,4 @@
 from flask import Flask, request, make_response, Response, jsonify, abort, g
-from flask_sqlalchemy import SQLAlchemy
 from threading import Thread
 from functools import wraps
 
@@ -9,32 +8,34 @@ import json
 import logging
 import requests
 import datetime
+from models import db, User
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    spotify_id = db.Column(db.String(200), unique=False, nullable=True)
-    spotify_token = db.Column(db.String(200), unique=False, nullable=True)
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
+# def get_db():
+#     db = getattr(g, '_database', None)
+#     if db is None:
+#         db = g._database = sqlite3.connect(DATABASE)
+#     return db
 
 
-def init_db():
-    print('INITIATE DB')
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+# def init_db():
+    # User.create_all()
 
-DATABASE = "./data/users.db"
+
+POSTGRES = {
+    'user': 'postgres',
+    'pw': 'password',
+    'db': 'postgres',
+    'host': 'localhost',
+    'port': '5432',
+}
+
+
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
-db = SQLAlchemy(app)
-init_db()
+# app.config['SQLALCHEMY_DATABASE_URI'] = ""
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+db.init_app(app)
+# init_db()
 
 
 @app.teardown_appcontext
@@ -85,19 +86,13 @@ def count_birthday_delay(date):
 @app.route("/hello/<username>", methods=["PUT"])
 @validate_username
 def update_user_bd(username):
-    db = get_db()
-    cursor = db.cursor()
-    # cursor = db.cursor()
     if not request.json or 'dateOfBirth' not in request.json:
         abort(400)
     date = request.json['dateOfBirth']
     if validate_bd(date):
         try:
-            cursor.execute('''INSERT INTO BDAYS(USERNAME,DATE) VALUES(?, ?)
-            ON CONFLICT(USERNAME)
-            DO UPDATE SET DATE=excluded.date''',
-            (username, date))
-            db.commit()
+            rows = User.query.filter_by(username=username).update({'date': date})
+            db.session.commit()
         except sqlite3.DatabaseError as err:
             print("Error: ", err)
             abort(500)
@@ -108,21 +103,17 @@ def update_user_bd(username):
 @app.route("/hello/<username>", methods=["GET"])
 @validate_username
 def get_user_bd(username):
-    db = get_db()
-    cursor = db.cursor()
-    try:
-        birthdate = cursor.execute("SELECT DATE FROM BDAYS where USERNAME=?", (username,)).fetchone()[0]
-        delay = count_birthday_delay(birthdate)
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        delay = count_birthday_delay(user.date)
         if delay != 0:
             return make_response(jsonify(
                 {'message': 'Hello {}! Your birthday is in {} days'.format(username, delay)}), 200)
         return make_response(jsonify(
             {'message': 'Hello {}! Happy Birthday!'.format(username)}), 200)
-    except sqlite3.DatabaseError as err:
-        print("Error: ", err)
     else:
-        make_response("Fail", 500)
-
+        abort(404)
+        return None
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
