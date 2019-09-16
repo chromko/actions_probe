@@ -2,6 +2,7 @@
 - hosts: label_service_bdays:&label_component_app
   become_user: root
   become: yes
+  serial: 1
   roles:
     - role: deploy-app
       tags:
